@@ -1,58 +1,233 @@
+
+📄 index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>TIC-TAC-TOE</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Change to script.js if your JS file has that name -->
-    <script src="index.js" defer></script>
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Tracking Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body data-theme="light">
+  <div class="app-shell">
 
-    <main class="background">
+    <!-- Sidebar / Brand -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <i class="fa-solid fa-feather"></i>
+        </div>
+        <div>
+          <h1 class="brand-name">JOGO</h1>
+          <p class="brand-tag">your budget tracking friend</p>
+        </div>
+      </div>
 
-        <section class="logo-section">
-            <img
-                src="https://cdn-icons-png.flaticon.com/512/566/566294.png"
-                alt="Logo"
-                class="logo">
-        </section>
+      <div class="sidebar-section">
+        <label class="micro-label">Display currency</label>
+        <select id="currencySelect" data-testid="currency-select" class="select">
+          <option value="INR">₹  INR — Indian Rupee</option>
+          <option value="USD">$  USD — US Dollar</option>
+          <option value="EUR">€  EUR — Euro</option>
+          <option value="GBP">£  GBP — Pound Sterling</option>
+          <option value="JPY">¥  JPY — Japanese Yen</option>
+          <option value="AUD">A$ AUD — Australian Dollar</option>
+          <option value="CAD">C$ CAD — Canadian Dollar</option>
+          <option value="SGD">S$ SGD — Singapore Dollar</option>
+          <option value="AED">د.إ AED — UAE Dirham</option>
+          <option value="CNY">¥  CNY — Chinese Yuan</option>
+        </select>
+      </div>
 
-        <section class="title">
-            <h1>TIC-TAC-TOE: A CLASSIC GAME</h1>
-        </section>
+      <div class="sidebar-section theme-row">
+        <label class="micro-label">Theme</label>
+        <button id="themeToggle" data-testid="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-track">
+            <span class="theme-thumb">
+              <i class="fa-solid fa-sun light-icon"></i>
+              <i class="fa-solid fa-moon dark-icon"></i>
+            </span>
+          </span>
+        </button>
+      </div>
 
-        <section class="display">
-            Player <span class="display-player playerX">X</span>'s turn
-        </section>
+      <div class="sidebar-foot">
+        <button id="clearAllBtn" data-testid="clear-all-btn" class="ghost-btn danger">
+          <i class="fa-regular fa-trash-can"></i> Clear all data
+        </button>
+        <p class="footer-note">Your data lives in this browser only.</p>
+      </div>
+    </aside>
 
-        <section class="container">
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-            <div class="tile"></div>
-        </section>
+    <!-- Main -->
+    <main class="main">
 
-        <section class="display announcer hide"></section>
+      <!-- Hero / Balance -->
+      <section class="hero">
+        <div class="hero-meta">
+          <span class="dot"></span>
+          <span class="hero-label">Current balance</span>
+        </div>
+        <h2 class="balance" data-testid="current-balance">
+          <span class="balance-sign"></span><span class="balance-num">0.00</span>
+        </h2>
+        <div class="hero-stats">
+          <div class="stat stat-income">
+            <div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div>
+              <p class="stat-label">Income</p>
+              <p class="stat-value" data-testid="total-income">0.00</p>
+            </div>
+          </div>
+          <div class="stat stat-expense">
+            <div class="stat-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
+            <div>
+              <p class="stat-label">Expenses</p>
+              <p class="stat-value" data-testid="total-expense">0.00</p>
+            </div>
+          </div>
+          <div class="stat stat-count">
+            <div class="stat-icon"><i class="fa-regular fa-file-lines"></i></div>
+            <div>
+              <p class="stat-label">Entries</p>
+              <p class="stat-value" data-testid="total-count">0</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <section class="controls">
-            <button id="reset">Reset Game</button>
-        </section>
+      <!-- Form + Chart row -->
+      <section class="grid-row">
+
+        <!-- Add transaction -->
+        <div class="card form-card">
+          <header class="card-head">
+            <h3>Add transaction</h3>
+            <p>Log income or an expense in seconds.</p>
+          </header>
+
+          <form id="txForm" data-testid="transaction-form" class="form" autocomplete="off">
+            <div class="type-switch">
+              <input type="radio" id="typeIncome" name="type" value="income" data-testid="type-income">
+              <label for="typeIncome" class="seg income"><i class="fa-solid fa-plus"></i> Income</label>
+
+              <input type="radio" id="typeExpense" name="type" value="expense" checked data-testid="type-expense">
+              <label for="typeExpense" class="seg expense"><i class="fa-solid fa-minus"></i> Expense</label>
+            </div>
+
+            <div class="field">
+              <label for="desc">Description</label>
+              <input type="text" id="desc" data-testid="desc-input" placeholder="e.g. Groceries at the market" required maxlength="60">
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" data-testid="amount-input" placeholder="0.00" step="0.01" min="0.01" required>
+              </div>
+              <div class="field">
+                <label for="category">Category</label>
+                <select id="category" data-testid="category-select" class="select">
+                  <optgroup label="Expense">
+                    <option value="Food">🍜 Food</option>
+                    <option value="Rent">🏠 Rent</option>
+                    <option value="Transport">🚌 Transport</option>
+                    <option value="Utilities">💡 Utilities</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Health">⚕️ Health</option>
+                    <option value="Entertainment">🎬 Entertainment</option>
+                    <option value="Education">📚 Education</option>
+                    <option value="Other Expense">📦 Other</option>
+                  </optgroup>
+                  <optgroup label="Income">
+                    <option value="Salary">💼 Salary</option>
+                    <option value="Freelance">💻 Freelance</option>
+                    <option value="Investment">📈 Investment</option>
+                    <option value="Gift">🎁 Gift</option>
+                    <option value="Other Income">✨ Other Income</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="date">Date</label>
+              <input type="date" id="date" data-testid="date-input" required>
+            </div>
+
+            <button type="submit" data-testid="submit-btn" class="primary-btn">
+              <span>Add transaction</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- Chart -->
+        <div class="card chart-card">
+          <header class="card-head">
+            <div>
+              <h3>Monthly summary</h3>
+              <p>Income vs expenses over time.</p>
+            </div>
+            <div class="chart-tabs">
+              <button class="tab active" data-mode="bar" data-testid="chart-bar"><i class="fa-solid fa-chart-column"></i></button>
+              <button class="tab" data-mode="line" data-testid="chart-line"><i class="fa-solid fa-chart-line"></i></button>
+              <button class="tab" data-mode="doughnut" data-testid="chart-doughnut"><i class="fa-solid fa-chart-pie"></i></button>
+            </div>
+          </header>
+          <div class="chart-wrap">
+            <canvas id="summaryChart" data-testid="summary-chart"></canvas>
+            <div id="chartEmpty" class="chart-empty hidden">
+              <i class="fa-regular fa-chart-bar"></i>
+              <p>Add a transaction to see your monthly trend.</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- History -->
+      <section class="card history-card">
+        <header class="card-head">
+          <div>
+            <h3>Transaction history</h3>
+            <p>Most recent first. Tap the bin to remove.</p>
+          </div>
+          <div class="filter-bar">
+            <div class="search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input id="searchInput" data-testid="search-input" type="text" placeholder="Search…">
+            </div>
+            <select id="filterSelect" data-testid="filter-select" class="select small">
+              <option value="all">All</option>
+              <option value="income">Income</option>
+              <option value="expense">Expenses</option>
+            </select>
+          </div>
+        </header>
+
+        <ul id="txList" data-testid="tx-list" class="tx-list"></ul>
+
+        <div id="emptyState" class="empty-state">
+          <div class="empty-art">
+            <i class="fa-regular fa-folder-open"></i>
+          </div>
+          <h4>No transactions yet</h4>
+          <p>Add your first entry on the left to start tracking.</p>
+        </div>
+      </section>
 
     </main>
+  </div>
 
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
